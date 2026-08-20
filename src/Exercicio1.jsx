@@ -7,7 +7,7 @@ function Exercicio1() {
     async function buscarPosts() {
       const resposta = await fetch("https://jsonplaceholder.typicode.com/posts");
       const dados = await resposta.json();
-      setPosts(dados.slice(0, 10));
+      setPosts(dados) //setPosts(dados.slice(0, 10));
     }
     buscarPosts();
   }, []);
@@ -18,11 +18,17 @@ function Exercicio1() {
       <section id="center">
         <h1>Exercício 1</h1>
         <ul>
-          {posts.map((post) => (
+          {/* 
+            posts.map((post) => (
             <li key={post.id}>
               {post.id} - {post.title}
             </li>
-          ))}
+          ))
+          */}
+          {posts
+            .filter((_, index) => index <= 9)
+            .map((post => (<li key={post.id}>{post.id} - {post.title}</li>)))
+          }
         </ul>
         <br />
       </section>
