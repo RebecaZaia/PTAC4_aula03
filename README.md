@@ -1,3 +1,6 @@
+#Atividade de PTAC - Aula 4
+#Alunas: Rebeca Zaia e Isabelle Santana
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
