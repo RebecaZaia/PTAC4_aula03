@@ -10,7 +10,7 @@ export default function Exercicio5() {
       try {
         setCarregando(true)
         setErro(null)
-        const resp = await fetch('https://jsonplaceholder.typicode.com/use')
+        const resp = await fetch('https://jsonplaceholder.typicode.com/users')
         if (!resp.ok) {
           throw new Error(`HTTP ${resp.status} — ${resp.statusText}`)
         }
