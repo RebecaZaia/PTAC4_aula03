@@ -3,6 +3,7 @@ import Exercicio1 from "./Exercicio1";
 import Exercicio2 from "./Exercicio2";
 import Exercicio4 from "./Exercicio4";
 import Exercicio5 from "./Exercicio5";
+import StatusAPI from "./StatusAPI";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       </section>
       <Exercicio4 />
       <Exercicio5 />
+      <StatusAPI />
     </>
   )
 }

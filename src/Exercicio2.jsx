@@ -1,15 +1,29 @@
 import { useEffect, useState } from 'react'
 
-function Exercicio2() {
+export default function Exercicio2() {
   const [comentarios, setComentarios] = useState([]);
 
   useEffect(() => {
+    const controle = new AbortController()  // cria um controle
+    const signal = controle.signal
+
     async function buscarComentarios() {
-      const resposta = await fetch("https://jsonplaceholder.typicode.com/comments?postId=1");
+      try{
+        const resposta = await fetch(
+        "https://jsonplaceholder.typicode.com/comments?postId=1",
+        { signal }
+      );
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`)
       const dados = await resposta.json();
       setComentarios(dados);
+      } catch (erro) {
+        if (erro.name !== "AbortError") {
+          console.error(erro.message);
+        }
+      }
     }
     buscarComentarios();
+    return () => controle.abort()
   }, []);
   console.log(comentarios);
 
@@ -31,5 +45,3 @@ function Exercicio2() {
     </>
   )
 }
-
-export default Exercicio2

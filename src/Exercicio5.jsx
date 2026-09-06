@@ -14,7 +14,9 @@ export default function Exercicio5() {
         if (!resp.ok) {
           throw new Error(`HTTP ${resp.status} — ${resp.statusText}`)
         }
-        const dados = await resp.json()
+
+        const dados = [] //await resp.json()
+
         setUsuarios(dados)
       } catch (e) {
         setErro(e.message)
@@ -26,9 +28,27 @@ export default function Exercicio5() {
     buscarUsuarios();
   }, []);
 
-  if (carregando) return <p>Carregando...</p>
-  if (erro)     return <p>Erro: {erro}</p>
-  if (usuarios.length === 0) return <p>Nenhum usuário encontrado.</p>
+  if (carregando) return (
+    <section id="center">
+      <h1>Exercício 5</h1>
+      <p>Carregando...</p>
+      <br />
+    </section>
+  )
+  if (erro)     return (
+    <section id="center">
+      <h1>Exercício 5</h1>
+      <p>Erro: {erro}</p>
+      <br />
+    </section>
+  )
+  if (usuarios.length === 0) return (
+    <section id="center">
+      <h1>Exercício 5</h1>
+      <p>Nenhum usuário encontrado.</p>
+      <br />
+    </section>
+  )
 
   return (
     <>
@@ -38,6 +58,7 @@ export default function Exercicio5() {
           .filter((_, index) => index <= 9)
           .map((usuario) => (<li key={usuario.id}>{usuario.name}</li>))
         }
+        <br />
       </section>
     </>
   );
