@@ -1,4 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import { apiGet, apiPost, apiPut, apiDelete } from "./api";
+
+const listarUsuarios = (signal) => apiGet("/users", { signal });
+const criarUsuario = (dados, signal) => apiPost("/users", dados, { signal });
+const atualizarUsuario = (id, dados, signal) => apiPut(`/users/${id}`, dados, { signal });
+const excluirUsuario = (id, signal) => apiDelete(`/users/${id}`, { signal });
 
 export default function Exercicio5() {
   const [usuarios, setUsuarios] = useState([]);
@@ -10,6 +16,14 @@ export default function Exercicio5() {
 
   const controllerRef = useRef(null);
 
+  function tratarErro(e) {
+    if (e.name === "AbortError") { return }
+    if (e.name === "ApiError" && e.status === 404) { setErro("Recurso não encontrado") }
+    else if (e.name === "ApiError" && e.status >= 500) { setErro("Erro no servidor") } 
+    else if (e instanceof TypeError && e.message === "Failed to fetch") { setErro("Falha de rede")} 
+    else { setErro(e.message) }
+  }
+
   useEffect(() => {
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -18,13 +32,12 @@ export default function Exercicio5() {
       try {
         setCarregando(true)
         setErro(null)
-        const resp = await fetch('https://jsonplaceholder.typicode.com/users', { signal: controller.signal });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${resp.statusText}`);
-        const dados = await resp.json();
+        const dados = await listarUsuarios(controller.signal);
+        console.log(dados);
         setUsuarios(dados)
-        
-      } catch (e) { if (e.name !== "AbortError") setErro(e.message);
-      } finally { setCarregando(false) }
+      } 
+      catch (e) { tratarErro(e)} 
+      finally { setCarregando(false) }
     } buscarUsuarios();
     return () => { 
       controller.abort(); 
@@ -32,39 +45,19 @@ export default function Exercicio5() {
     };
   }, []);
 
-  async function excluirUsuario(id) {
-    const resp = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
-       method: 'DELETE',
-       signal: controllerRef.current?.signal
-      })
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-    return true
-  }
-
   async function tentarExcluir(id) {
     const prev = usuarios
-    setUsuarios(prev.filter(u => u.id !== id))  // otimista
+    setUsuarios(prev.filter(u => u.id !== id))  //Exclusão otimista
     try {
       setErro(null);
-      await excluirUsuario(id)
+      await excluirUsuario(id, controllerRef.current?.signal)
       console.log(`Usuário ${id} excluído`);
     } catch (e) {
       if (e.name !== "AbortError") { 
         setUsuarios(prev); 
-        setErro(e.message); 
+        tratarErro(e); 
       }
     }
-  }
-
-  async function atualizarUsuario(id, novosDados) {
-    const resp = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(novosDados),
-      signal: controllerRef.current?.signal
-    })
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-    return await resp.json()
   }
 
   function editarUsuario(usuario) {
@@ -86,12 +79,12 @@ export default function Exercicio5() {
       setErro(null);
 
       if (cadastrando) {
-        const novo = await criarUsuario(formulario);
+        const novo = await criarUsuario(formulario, controllerRef.current?.signal);
         setUsuarios((prev) => [novo, ...prev]);
         setCadastrando(false);
 
       } else {
-        const atualizado = await atualizarUsuario(editando.id, formulario);
+        const atualizado = await atualizarUsuario(editando.id, formulario, controllerRef.current?.signal);
         setUsuarios((prev) => prev.map((u) => u.id === atualizado.id ? atualizado : u));
         setEditando(null);
       }
@@ -99,21 +92,7 @@ export default function Exercicio5() {
         name: "",
         email: "",
       });
-    } catch (e) { 
-      if (e.name !== "AbortError") setErro(e.message);
-    }
-  }
-
-  async function criarUsuario(novosDados) {
-    const resp = await fetch("https://jsonplaceholder.typicode.com/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify(novosDados),
-        signal: controllerRef.current?.signal
-      }
-    );
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-    return await resp.json();
+    } catch (e) { tratarErro(e) }
   }
 
   function novoUsuario() {
