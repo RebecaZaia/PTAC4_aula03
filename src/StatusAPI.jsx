@@ -35,20 +35,23 @@ export default function StatusAPI() {
 
   if (carregando) return (
     <section id="center">
-        <h1>Aula 04 -Exercício 5</h1>
+        <h1>Aula 04 - Exercício 5</h1>
         <p>Carregando...</p>
+        <br />
     </section>
   )
   if (erro)     return (
   <section id="center">
     <h1>Aula 04 -Exercício 5</h1>
     <p>Erro: {erro}</p>
+    <br />
   </section>
 )
   if (usuarios.length === 0) return (
     <section id="center">
       <h1>Aula 04 -Exercício 5</h1>
       <p>Nenhum item encontrado.</p>
+      <br />
     </section>
   )
 
@@ -58,6 +61,7 @@ export default function StatusAPI() {
         <h1>Aula 04 -Exercício 5</h1>
         <h2>Status da API</h2> 
         <p>Sucesso: {usuarios.length} itens carregados.</p>
+        <br />
       </section>
     </>
   )

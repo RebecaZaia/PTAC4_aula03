@@ -4,6 +4,7 @@ import Exercicio2 from "./Exercicio2";
 import Exercicio4 from "./Exercicio4";
 import Exercicio5 from "./Exercicio5";
 import StatusAPI from "./StatusAPI";
+import {ListaProdutos} from "./ListaProdutos";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Exercicio4 />
       <Exercicio5 />
       <StatusAPI />
+      <ListaProdutos />
     </>
   )
 }

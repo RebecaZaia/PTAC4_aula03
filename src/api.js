@@ -27,8 +27,8 @@ export async function apiDelete(caminho, opcoes = {}) {
 }
 
 async function requisicao(caminho, opcoes = {}) {
-  const {signal, headers: headersDaChamada, ...resto} = opcoes
-  const url = `${BASE_URL}${caminho}`
+  const {signal, headers: headersDaChamada, baseURL, ...resto} = opcoes
+  const url = `${baseURL ?? BASE_URL}${caminho}`
   const configuracoes = {
     headers: { 'Content-Type': 'application/json', ...headersDaChamada },
     ...resto,
